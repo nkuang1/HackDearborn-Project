@@ -101,6 +101,7 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
             "/history.js": "history.js",
             "/recipe.js": "recipe.js",
             "/styles.css": "styles.css",
+            "/assets/cartoon-cookie.jpg": "assets/cartoon-cookie.jpg",
         }
         file_name = public_files.get(request_path)
         if file_name is None:

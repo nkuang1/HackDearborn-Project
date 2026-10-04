@@ -28,7 +28,8 @@ body {
   display: flex;
   flex-direction: column;
   background:
-    radial-gradient(ellipse at 52% 48%, rgba(232, 239, 224, 0.4), transparent 48%),
+    linear-gradient(rgba(247, 248, 244, 0.64), rgba(247, 248, 244, 0.64)),
+    url("/assets/cartoon-cookie.jpg") center / cover fixed,
     #f7f8f4;
 }
 
