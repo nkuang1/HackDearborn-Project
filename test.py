@@ -2,7 +2,9 @@ import json
 import mimetypes
 import os
 import re
+import threading
 import uuid
+from datetime import datetime, timezone
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -25,6 +27,8 @@ IMAGE_EXTENSIONS = {
     "image/gif": ".gif",
     "image/avif": ".avif",
 }
+HISTORY = {}
+HISTORY_LOCK = threading.Lock()
 
 
 def detect_image_type(image_data):
@@ -60,6 +64,12 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
             self.send_json(200, {"status": "ok"})
             return
 
+        if request_path == "/api/history":
+            with HISTORY_LOCK:
+                entries = list(reversed(list(HISTORY.values())))
+            self.send_json(200, {"entries": entries})
+            return
+
         cookie_match = re.fullmatch(r"/cookie/([0-9a-f]{32})", request_path)
         if cookie_match is not None:
             cookie_path = UPLOAD_DIR / cookie_match.group(1) / "cookiefied_image.jpg"
@@ -85,7 +95,11 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
         public_files = {
             "/": "index.html",
             "/index.html": "index.html",
+            "/history": "history.html",
+            "/history.html": "history.html",
             "/app.js": "app.js",
+            "/history.js": "history.js",
+            "/recipe.js": "recipe.js",
             "/styles.css": "styles.css",
         }
         file_name = public_files.get(request_path)
@@ -189,6 +203,14 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
             )
             return
 
+        entry = {
+            "upload_id": upload_id,
+            "recipe": recipe,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        with HISTORY_LOCK:
+            HISTORY[upload_id] = entry
+
         self.send_json(
             201,
             {
@@ -197,6 +219,7 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
                 "size": len(image_data),
                 "upload_id": upload_id,
                 "recipe": recipe,
+                "created_at": entry["created_at"],
             },
         )
 
@@ -229,6 +252,9 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
             self.log_error("Failed to delete uploaded image %s: %s", upload_id, error)
             self.send_json(500, {"error": "The server could not delete this image."})
             return
+
+        with HISTORY_LOCK:
+            HISTORY.pop(upload_id, None)
 
         print(f"SUCCESS: Deleted uploads/{upload_id}/{image_path.name}", flush=True)
         self.send_json(
