@@ -24,6 +24,7 @@ const uploadStatus = document.querySelector("#upload-status");
 const recipePanel = document.querySelector("#recipe-panel");
 const recipeLoading = document.querySelector("#recipe-loading");
 const recipeText = document.querySelector("#recipe-text");
+const cookiefiedImage = document.querySelector("#cookiefied-image");
 
 let previewUrl = null;
 let selectedFile = null;
@@ -50,6 +51,8 @@ function clearError() {
 }
 
 function clearRecipe() {
+  cookiefiedImage.removeAttribute("src");
+  cookiefiedImage.hidden = true;
   recipeText.textContent = "";
   recipeText.hidden = true;
   recipeLoading.hidden = true;
@@ -163,6 +166,8 @@ async function uploadSelectedFile() {
 
     uploadedImageIds.add(result.upload_id);
     updateResetButton();
+    cookiefiedImage.src = `/cookie/${result.upload_id}`;
+    cookiefiedImage.hidden = false;
     recipeText.textContent = result.recipe;
     recipeText.hidden = false;
     recipeLoading.hidden = true;

@@ -27,16 +27,13 @@
             <path d="m5.5 20 6.2-5.8a2 2 0 0 1 2.8.1l2 2 1.3-1.2a2 2 0 0 1 2.8.1l3.9 3.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
           </svg>
         </span>
-        <span>frame<span class="brand-period">.</span></span>
       </a>
-      <span class="header-note"><span class="status-dot"></span> Your images stay yours</span>
     </header>
 
     <main class="page-main">
       <section class="upload-card" aria-labelledby="page-title">
-        <div class="eyebrow"><span class="eyebrow-line"></span> A little space for your pictures</div>
         <h1 id="page-title">Turn your images<br />into <span>cookies.</span></h1>
-        <p class="intro">Choose a photo from your device and send it to your local Python backend. Your image never leaves your computer.</p>
+        <p class="intro">Choose a photo from this device.</p>
 
         <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose an image file or drop one here">
           <input
@@ -72,6 +69,7 @@
         </div>
 
         <section class="recipe-panel" id="recipe-panel" aria-labelledby="recipe-heading" aria-busy="false" hidden>
+          <img class="cookiefied-image" id="cookiefied-image" alt="Your image transformed into a cookie" hidden />
           <div class="recipe-heading">
             <span class="eyebrow-line" aria-hidden="true"></span>
             <h2 id="recipe-heading">Your cookie recipe</h2>
@@ -107,20 +105,6 @@
           <span>Images are sent only to the Python server running on your computer.</span>
         </div>
       </section>
-
-      <aside class="side-note" aria-label="Upload details">
-        <span class="side-note-index">01 <span></span> 01</span>
-        <p class="side-note-title">Good things<br />start with a picture.</p>
-        <div class="side-note-bottom">
-          <span class="tiny-sparkle" aria-hidden="true">✳</span>
-          <span>Simple by design.</span>
-        </div>
-      </aside>
     </main>
-
-    <footer class="site-footer">
-      <span>Made for the moments worth keeping.</span>
-      <span class="footer-right">A softer way to upload <span aria-hidden="true">↗</span></span>
-    </footer>
   </body>
 </html>

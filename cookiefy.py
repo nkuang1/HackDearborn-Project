@@ -53,13 +53,12 @@ def generate_recipe(user, cookiefied_image_path):
 
     return interaction.output_text
     
-def generate_cookie_recipe(image_path):
+def generate_cookie_recipe(image_path, cookiefied_image_path):
     load_dotenv()
     gemini_key = os.getenv('GEMINI_API_KEY')
     client = genai.Client(api_key=gemini_key)
     with tempfile.TemporaryDirectory() as working_directory:
         resized_image_path = os.path.join(working_directory, "resized.jpg")
-        cookiefied_image_path = os.path.join(working_directory, "cookiefied_image.jpg")
         resize_image(image_path, resized_image_path)
 
         # costs 4 cents to run!!!!

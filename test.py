@@ -60,6 +60,28 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
             self.send_json(200, {"status": "ok"})
             return
 
+        cookie_match = re.fullmatch(r"/cookie/([0-9a-f]{32})", request_path)
+        if cookie_match is not None:
+            cookie_path = UPLOAD_DIR / cookie_match.group(1) / "cookiefied_image.jpg"
+            try:
+                cookie_image = cookie_path.read_bytes()
+            except FileNotFoundError:
+                self.send_json(404, {"error": "The generated cookie image was not found."})
+                return
+            except OSError as error:
+                self.log_error("Failed to read generated cookie image: %s", error)
+                self.send_json(500, {"error": "The generated cookie image could not be read."})
+                return
+
+            self.send_response(200)
+            self.send_header("Content-Type", "image/jpeg")
+            self.send_header("Content-Length", str(len(cookie_image)))
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(cookie_image)
+            return
+
         public_files = {
             "/": "index.html",
             "/index.html": "index.html",
@@ -147,13 +169,17 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
         try:
             from cookiefy import generate_cookie_recipe
 
-            recipe = generate_cookie_recipe(image_path)
+            cookiefied_image_path = upload_directory / "cookiefied_image.jpg"
+            recipe = generate_cookie_recipe(image_path, cookiefied_image_path)
+            if not cookiefied_image_path.is_file() or cookiefied_image_path.stat().st_size == 0:
+                raise ValueError("Cookie image generation did not create an image.")
             if not isinstance(recipe, str) or not recipe.strip():
                 raise ValueError("Recipe generation returned no recipe text.")
         except Exception as error:
             self.log_error("Failed to generate a cookie recipe for upload %s: %s", upload_id, error)
             try:
-                image_path.unlink()
+                for generated_file in upload_directory.iterdir():
+                    generated_file.unlink()
                 upload_directory.rmdir()
             except OSError as cleanup_error:
                 self.log_error("Failed to clean up upload %s: %s", upload_id, cleanup_error)
@@ -196,7 +222,8 @@ class ImageUploadHandler(SimpleHTTPRequestHandler):
 
         image_path = stored_files[0]
         try:
-            image_path.unlink()
+            for stored_file in upload_directory.iterdir():
+                stored_file.unlink()
             upload_directory.rmdir()
         except OSError as error:
             self.log_error("Failed to delete uploaded image %s: %s", upload_id, error)
