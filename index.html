@@ -71,6 +71,18 @@
           </div>
         </div>
 
+        <section class="recipe-panel" id="recipe-panel" aria-labelledby="recipe-heading" aria-busy="false" hidden>
+          <div class="recipe-heading">
+            <span class="eyebrow-line" aria-hidden="true"></span>
+            <h2 id="recipe-heading">Your cookie recipe</h2>
+          </div>
+          <div class="recipe-loading" id="recipe-loading" role="status" hidden>
+            <span class="loading-spinner" aria-hidden="true"></span>
+            <span>We’re turning your image into a cookie recipe. This can take a little while.</span>
+          </div>
+          <p class="recipe-text" id="recipe-text" aria-live="polite" hidden></p>
+        </section>
+
         <p class="file-details" id="file-details" aria-live="polite" hidden>
           <span class="file-details-icon" aria-hidden="true">
             <svg viewBox="0 0 20 20" fill="none">

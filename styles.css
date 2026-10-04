@@ -271,6 +271,78 @@ h1 span {
   object-fit: contain;
 }
 
+.recipe-panel {
+  margin-top: 22px;
+  padding: 20px 22px;
+  border: 1px solid #e5eae1;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.recipe-panel[hidden] {
+  display: none;
+}
+
+.recipe-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.recipe-heading h2 {
+  margin: 0;
+  color: #34443a;
+  font-family: "Manrope", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.recipe-loading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-top: 15px;
+  color: #788179;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.recipe-loading[hidden],
+.recipe-text[hidden] {
+  display: none;
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 2px solid #dce6dc;
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: recipe-spinner 800ms linear infinite;
+}
+
+@keyframes recipe-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner {
+    animation-duration: 2s;
+  }
+}
+
+.recipe-text {
+  margin: 13px 0 0;
+  color: #68746a;
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
 .preview-overlay {
   position: absolute;
   right: 12px;

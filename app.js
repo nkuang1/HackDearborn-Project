@@ -21,11 +21,15 @@ const changeButton = document.querySelector("#change-button");
 const uploadButton = document.querySelector("#upload-button");
 const resetButton = document.querySelector("#reset-button");
 const uploadStatus = document.querySelector("#upload-status");
+const recipePanel = document.querySelector("#recipe-panel");
+const recipeLoading = document.querySelector("#recipe-loading");
+const recipeText = document.querySelector("#recipe-text");
 
 let previewUrl = null;
 let selectedFile = null;
 let uploadedImageIds = new Set();
 let isResetting = false;
+let isUploading = false;
 
 function formatFileSize(bytes) {
   if (bytes < 1024 * 1024) {
@@ -45,11 +49,20 @@ function clearError() {
   errorMessage.hidden = true;
 }
 
+function clearRecipe() {
+  recipeText.textContent = "";
+  recipeText.hidden = true;
+  recipeLoading.hidden = true;
+  recipePanel.hidden = true;
+  recipePanel.setAttribute("aria-busy", "false");
+}
+
 function updateResetButton() {
   resetButton.hidden = !selectedFile && uploadedImageIds.size === 0;
 }
 
 function clearPreview() {
+  clearRecipe();
   if (previewUrl) {
     URL.revokeObjectURL(previewUrl);
     previewUrl = null;
@@ -69,7 +82,7 @@ function clearPreview() {
 }
 
 function displayFile(file) {
-  if (isResetting) {
+  if (isResetting || isUploading) {
     return;
   }
 
@@ -103,14 +116,23 @@ function displayFile(file) {
 }
 
 async function uploadSelectedFile() {
-  if (!selectedFile || uploadButton.disabled) {
+  if (!selectedFile || uploadButton.disabled || isUploading) {
     return;
   }
 
   clearError();
   uploadStatus.hidden = true;
+  recipeText.textContent = "";
+  recipeText.hidden = true;
+  recipeLoading.hidden = false;
+  recipePanel.hidden = false;
+  recipePanel.setAttribute("aria-busy", "true");
+  isUploading = true;
   uploadButton.disabled = true;
-  uploadButton.textContent = "Sending image…";
+  uploadButton.textContent = "Creating recipe…";
+  resetButton.disabled = true;
+  changeButton.disabled = true;
+  removeButton.disabled = true;
 
   try {
     const response = await fetch("/upload", {
@@ -135,22 +157,38 @@ async function uploadSelectedFile() {
       throw new Error("The backend did not return a valid image ID for cleanup.");
     }
 
+    if (typeof result.recipe !== "string" || !result.recipe.trim()) {
+      throw new Error("The backend did not return a cookie recipe.");
+    }
+
     uploadedImageIds.add(result.upload_id);
     updateResetButton();
+    recipeText.textContent = result.recipe;
+    recipeText.hidden = false;
+    recipeLoading.hidden = true;
+    recipePanel.setAttribute("aria-busy", "false");
     uploadButton.textContent = "Image received";
-    uploadStatus.textContent = `Received by the Python backend (${formatFileSize(result.size)}).`;
+    uploadStatus.textContent = `Recipe generated from your image (${formatFileSize(result.size)}).`;
     uploadStatus.hidden = false;
   } catch (error) {
-    uploadButton.disabled = false;
-    uploadButton.textContent = "Send image to backend";
+    clearRecipe();
     showError(error instanceof TypeError
       ? "Could not reach the backend. Start it with “python test.py” and open this page at http://127.0.0.1:8000."
       : error.message);
+  } finally {
+    isUploading = false;
+    uploadButton.disabled = false;
+    uploadButton.textContent = uploadedImageIds.size > 0
+      ? "Image received"
+      : "Send image to backend";
+    resetButton.disabled = false;
+    changeButton.disabled = false;
+    removeButton.disabled = false;
   }
 }
 
 async function resetApp() {
-  if (isResetting) {
+  if (isResetting || isUploading) {
     return;
   }
 
@@ -224,7 +262,7 @@ function openFilePicker() {
 }
 
 dropzone.addEventListener("click", (event) => {
-  if (isResetting) {
+  if (isResetting || isUploading) {
     return;
   }
 
