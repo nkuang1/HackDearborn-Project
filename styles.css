@@ -363,8 +363,85 @@ h1 span {
   margin: 13px 0 0;
   color: #68746a;
   font-size: 12px;
-  line-height: 1.8;
-  white-space: pre-wrap;
+  line-height: 1.75;
+}
+
+.recipe-text > :first-child {
+  margin-top: 0;
+}
+
+.recipe-text > :last-child {
+  margin-bottom: 0;
+}
+
+.recipe-text h3,
+.recipe-text h4 {
+  color: #34443a;
+  font-family: "Manrope", sans-serif;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.recipe-text h3 {
+  margin: 22px 0 9px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #edf0ea;
+  font-size: 15px;
+}
+
+.recipe-text h4 {
+  margin: 16px 0 6px;
+  font-size: 13px;
+}
+
+.recipe-text p {
+  margin: 9px 0;
+}
+
+.recipe-text ul,
+.recipe-text ol {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 16px;
+  padding-left: 22px;
+}
+
+.recipe-text ul {
+  list-style: disc;
+}
+
+.recipe-text ol {
+  list-style: decimal;
+}
+
+.recipe-text li {
+  padding-left: 3px;
+}
+
+.recipe-text li::marker {
+  color: #729276;
+  font-weight: 700;
+}
+
+.recipe-text strong {
+  color: #425248;
+  font-weight: 700;
+}
+
+.recipe-text code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #f0f3ee;
+  color: #425248;
+  font-family: Consolas, monospace;
+  font-size: 0.92em;
+}
+
+.recipe-text hr {
+  height: 1px;
+  margin: 16px 0;
+  border: 0;
+  background: #edf0ea;
 }
 
 .preview-overlay {
