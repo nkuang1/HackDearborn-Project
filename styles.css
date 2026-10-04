@@ -42,12 +42,12 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: min(100% - 112px, 1320px);
+  width: min(100% - 64px, 1440px);
   margin: 0 auto;
 }
 
 .site-header {
-  min-height: 92px;
+  min-height: 72px;
 }
 
 .brand {
@@ -97,18 +97,28 @@ a {
 
 .page-main {
   position: relative;
-  display: flex;
+  display: block;
   flex: 1;
-  align-items: center;
-  justify-content: center;
-  width: min(100% - 48px, 1000px);
+  width: min(100% - 64px, 1280px);
   margin: 0 auto;
-  padding: 55px 0 78px;
+  padding: 28px 0 40px;
 }
 
 .upload-card {
-  width: min(100%, 556px);
-  margin-left: -34px;
+  width: 100%;
+  margin: 0;
+}
+
+.upload-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.upload-column,
+.result-column {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -272,7 +282,7 @@ h1 span {
 }
 
 .recipe-panel {
-  margin-top: 22px;
+  margin-top: 0;
   padding: 20px 22px;
   border: 1px solid #e5eae1;
   border-radius: 11px;
@@ -611,17 +621,18 @@ h1 span {
 @media (max-width: 800px) {
   .site-header,
   .site-footer {
-    width: calc(100% - 48px);
+    width: calc(100% - 40px);
   }
 
   .page-main {
-    padding-top: 60px;
-    padding-bottom: 60px;
+    width: calc(100% - 40px);
+    padding-top: 24px;
+    padding-bottom: 32px;
   }
 
-  .upload-card {
-    width: min(100%, 556px);
-    margin-left: 0;
+  .upload-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
 
   .side-note {
@@ -645,7 +656,7 @@ h1 span {
 
   .page-main {
     width: calc(100% - 36px);
-    padding: 32px 0 44px;
+    padding: 20px 0 28px;
   }
 
   .eyebrow {
